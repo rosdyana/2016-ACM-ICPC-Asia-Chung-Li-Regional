@@ -75,9 +75,9 @@ if args.i is not None:
                     normV1 = np.array(inputVertices1)
                     normV2 = np.array(inputVertices2)
                     for x,y in enumerate(normV1) :
-                        normV1[x]=y-1
+                        normV1[x]=y-minG1
                     for x,y in enumerate(normV2) :
-                        normV2[x]=y-11
+                        normV2[x]=y-minG2
 
                     #find the perfect matching , thanks to numpy
                     findMatching = (normV1==normV2).all()
