@@ -9,6 +9,30 @@ Licensed under the Apache License, Version 2.0
 Name : Rosdyana Kusuma 
 Student ID : 1056035
 '''
+def per(mtx, column, selected, prod, output=False):
+    """
+    Row expansion for the permanent of matrix mtx.
+    The counter column is the current column, 
+    selected is a list of indices of selected rows,
+    and prod accumulates the current product.
+    """
+    if column == mtx.shape[1]:
+        if output:
+            print selected, prod
+        return prod
+    else:
+        result = 0
+        for row in range(mtx.shape[0]):
+            if not row in selected:
+                result = result \
+                + per(mtx, column+1, selected+[row], prod*mtx[row,column])
+        return result
+
+def permanent(mat):
+    """
+    Returns the permanent of the matrix mat.
+    """
+    return per(mat, 0, [], 1)
 
 if platform.system() == "Windows":
     os.system('cls')
@@ -33,65 +57,57 @@ parser.add_argument("-i", help="input file")
 args = parser.parse_args()
 
 if args.i is not None:
-    file= open(args.i , "r")
-
-    lines = file.readlines()
-
-    numOfGraphs = int(lines[0])
-    vertexAndEdge = lines[1]
+    with open(args.i) as f:
+        content = f.readlines()
+    content = [x.strip() for x in content]
+    countLine = 0
+    for i in content:
+        countLine += 1
+    #print countLine
+    #print content
+    numOfGraphs = int(content[0])
+    #print numOfGraphs
     vertexAndEdgeIdx = 1
     edgesIdx = 2
 
     if numOfGraphs <= 20 :
-        for BiGraph in range(numOfGraphs) :
-        
-            separateVertexAndEdge = vertexAndEdge.split(' ')
-            vertex = int(separateVertexAndEdge[0])
-            edge = int(separateVertexAndEdge[1])
-            if BiGraph < numOfGraphs-1:
-                vertexAndEdgeIdx += edge+1
-                #print vertexAndEdgeIdx
-                vertexAndEdge = lines[vertexAndEdgeIdx]
-                #print vertexAndEdge
-
-            if vertex <= 20 and vertex % 2 == 0:
-                minG1 = 1
-                maxG1 = vertex/2
-                minG2 = (vertex/2)+1
-                maxG2 = vertex
-
-                if edge <= 46 :
-                    for numEdge in range(edge) :
-                        if BiGraph == 0:
-                            inputEdges = lines[numEdge+2]
-                        else:
-                            inputEdges = lines[numEdge+vertexAndEdgeIdx]
-                        #print inputEdges
-                        separateEdges = inputEdges.split(' ')
-                        inputVertices1.append(int(separateEdges[0]))
-                        inputVertices2.append(int(separateEdges[1]))
-
-                    #normalizing vertices
-                    normV1 = np.array(inputVertices1)
-                    normV2 = np.array(inputVertices2)
-                    for x,y in enumerate(normV1) :
-                        normV1[x]=y-minG1
-                    for x,y in enumerate(normV2) :
-                        normV2[x]=y-minG2
-
-                    #find the perfect matching , thanks to numpy
-                    findMatching = (normV1==normV2).all()
-                    if findMatching :                    
-                        statPerfectmatching.append('0')
-                    else :
-                        statPerfectmatching.append('1')
-
-                else : 
-                    print 'Maximum number of edges in a bipartite graph is 46.\n'
-            else :
-                print 'Maximum number of vertices in a bipartite graph is 20 and should be even number.\n'
-        final = np.array(statPerfectmatching)
-        print 'Output for the Sample Input'
-        print '\n'.join(final)
+        vertexAndEdge = content[vertexAndEdgeIdx]        
+        separateVertexAndEdge = vertexAndEdge.split(' ')
+        vertex = int(separateVertexAndEdge[0])
+        #print vertex
+        edge = int(separateVertexAndEdge[1])
+        #print edge
+        check = edge+edgesIdx
+        adjacencyArr = np.zeros(shape=(vertex/2,vertex/2))
+        adjacencyArr.fill(0)
+        #print adjacencyArr
+        #print check
+        for i, item in enumerate(content):
+            #print i
+            #print item
+            #print check
+            if i > 1:
+                #print check
+                if i < check:
+                    edges = content[i]
+                    #print edges
+                    separateEdges = edges.split(' ')
+                    adjacencyArr.itemset(int(separateEdges[0])-1 , int(separateEdges[1]) - 1 - (vertex/2), 1)
+                    #print separateEdges
+                if i == check:
+                    #print len(content)
+                    #print adjacencyArr
+                    if permanent(adjacencyArr)%2 == 1:
+                        print "0"
+                    else:
+                        print "1"
+                    adjacencyArr.fill(0)
+                    if i < len(content):
+                        edges = content[i]
+                        separateEdges = edges.split(' ')
+                        #print separateEdges
+                        edge = int(separateEdges[1])
+                        check = check + edge + 1
+                        #print check
     else :
         print 'Maximum number of bipartite graphs is 20.\n'
