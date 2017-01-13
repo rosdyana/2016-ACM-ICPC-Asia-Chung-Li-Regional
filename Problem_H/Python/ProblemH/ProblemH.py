@@ -2,6 +2,7 @@ import platform
 import os
 import numpy as np
 import argparse
+from itertools import*
 
 '''
 Copyright 2017 Rosdyana Kusuma.
@@ -9,30 +10,18 @@ Licensed under the Apache License, Version 2.0
 Name : Rosdyana Kusuma 
 Student ID : 1056035
 '''
-def per(mtx, column, selected, prod, output=False):
-    """
-    Row expansion for the permanent of matrix mtx.
-    The counter column is the current column, 
-    selected is a list of indices of selected rows,
-    and prod accumulates the current product.
-    """
-    if column == mtx.shape[1]:
-        if output:
-            print selected, prod
-        return prod
-    else:
-        result = 0
-        for row in range(mtx.shape[0]):
-            if not row in selected:
-                result = result \
-                + per(mtx, column+1, selected+[row], prod*mtx[row,column])
-        return result
-
-def permanent(mat):
-    """
-    Returns the permanent of the matrix mat.
-    """
-    return per(mat, 0, [], 1)
+	
+def perm_ryser(a): # Ryser's formula, using matrix entries
+    maxn = len(a)
+    n_list = range(1,maxn+1)
+    s_list = chain.from_iterable(combinations(n_list,i) for i in range(maxn+1))
+    total = 0
+    for st in s_list:
+        stotal = (-1)**len(st)
+        for i in xrange(maxn):
+            stotal *= sum(a[i][j-1] for j in st)
+        total += stotal
+    return total*((-1)**maxn)
 
 if platform.system() == "Windows":
     os.system('cls')
@@ -98,7 +87,7 @@ if args.i is not None:
                 if i == check:
                     #print len(content)
                     #print adjacencyArr
-                    if permanent(adjacencyArr)%2 == 1:
+                    if perm_ryser(adjacencyArr)%2 == 1:
                         print "0"
                     else:
                         print "1"
