@@ -87,6 +87,7 @@ if args.i is not None:
             #print item
             #print check
             if i > 1:
+                #print i
                 #print check
                 if i < check:
                     edges = content[i]
