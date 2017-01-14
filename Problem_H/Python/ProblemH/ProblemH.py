@@ -3,6 +3,7 @@ import os
 import numpy as np
 import argparse
 from itertools import*
+import time
 
 '''
 Copyright 2017 Rosdyana Kusuma.
@@ -10,7 +11,8 @@ Licensed under the Apache License, Version 2.0
 Name : Rosdyana Kusuma 
 Student ID : 1056035
 '''
-	
+
+start = time.clock()	
 def perm_ryser(a): # Ryser's formula, using matrix entries
     maxn = len(a)
     n_list = range(1,maxn+1)
@@ -101,3 +103,4 @@ if args.i is not None:
                         #print check
     else :
         print 'Maximum number of bipartite graphs is 20.\n'
+print (time.clock() - start)
