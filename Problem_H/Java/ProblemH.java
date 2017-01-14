@@ -62,6 +62,7 @@ public class ProblemH {
 	}
 	public static void main(String[] arg)
 	{
+		double startTime = System.currentTimeMillis();
 		int numberOfGraph =0;
 		/* example to check permanent of matrix
 		int [][]ArrayCheck1 =new int[][]{
@@ -156,10 +157,12 @@ public class ProblemH {
 			            	check = check + nEdge+1;
 		            	}
 	            	}          	
-	            }
-	            
+	            }            
 	            //System.out.println("finish");
 	            br.close();
+				double endTime   = System.currentTimeMillis();
+				double totalTime = endTime - startTime;
+				System.out.println(totalTime/1000);	
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }	
